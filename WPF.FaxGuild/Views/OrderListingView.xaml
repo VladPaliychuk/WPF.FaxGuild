@@ -1,0 +1,117 @@
+﻿<UserControl x:Class="WPF.FaxGuild.Views.OrderListingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPF.FaxGuild.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             FontSize="14">
+    
+    <Grid x:Name="MainGrid" Background="#2F3136">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65" />
+            <RowDefinition Height="120"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" 
+                   Foreground="#FF9900" 
+                   FontSize="21" 
+                   Background="#2F3136" 
+                   TextAlignment="Center" 
+                   VerticalAlignment="Center">
+            <TextBlock.Text>
+                FAX GUILD
+            </TextBlock.Text>
+        </TextBlock>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+
+            <DockPanel Grid.Row="0">
+                <Button Content="CreateOrder" Background="#43464D" Width="200" BorderBrush="#FF9900" Foreground="#DCDDDE" FontSize="16"/>
+                <Button Content="#tag" Background="#43464D" Width="200" BorderBrush="#FF9900" Foreground="#DCDDDE" FontSize="16"/>
+                <Button Content="#tag" Background="#43464D" Width="200" BorderBrush="#FF9900" Foreground="#DCDDDE" FontSize="16"/>
+                <Button Content="#tag" Background="#43464D" Width="200" BorderBrush="#FF9900" Foreground="#DCDDDE" FontSize="16"/>
+                <Button Content="#tag" Background="#43464D" Width="200" BorderBrush="#FF9900" Foreground="#DCDDDE" FontSize="16"/>
+            </DockPanel>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" FontSize="30" Text="Усі відмітки" Foreground="#DCDDDE" Margin="10 0 0 0"/>
+
+            <ListView Grid.Row="1"
+                      Margin="0 25 0 0"
+                      Background="#2F3136" 
+                      Foreground="#DCDDDE"
+                      ItemsSource="{Binding Orders}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Workplace ID">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock 
+                                        Text="{Binding WorkplaceId}" 
+                                        Foreground="#DCDDDE" Background="#2F3136" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        
+                        <GridViewColumn Header="Name" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" 
+                                               Foreground="#DCDDDE" Background="#2F3136"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        
+                        <GridViewColumn Header="Start time">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Start}" 
+                                               Foreground="#DCDDDE" Background="#2F3136"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        
+                        <GridViewColumn Header="End time">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding End}" 
+                                               Foreground="#DCDDDE" Background="#2F3136"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            
+            <Button Grid.Row="2" 
+                Content="Відмітитись" 
+                        Margin="0 10 0 0" 
+                        Padding="5" 
+                        Background="#43464D"
+                        BorderBrush="#FF9900"
+                        Foreground="#DCDDDE"
+                    Command="{Binding MakeOrderCommand}"/>
+        </Grid>
+
+        
+    </Grid>
+</UserControl>
