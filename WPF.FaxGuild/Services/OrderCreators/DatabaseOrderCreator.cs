@@ -17,7 +17,7 @@ namespace WPF.FaxGuild.Services.OrderCreators
             _dbFactory = dbFactory;
         }
 
-        public async Task CreateOrder(DAL.Models.Order order)
+        public async Task CreateOrder(Models.Order order)
         {
             using(FaxguildDbContext context = _dbFactory.CreateDbContext())
             {
@@ -27,7 +27,7 @@ namespace WPF.FaxGuild.Services.OrderCreators
                 await context.SaveChangesAsync();
             }
         }
-        private OrderDTO ToOrderDTO(DAL.Models.Order order)
+        private OrderDTO ToOrderDTO(Models.Order order)
         {
             return new OrderDTO()
             {

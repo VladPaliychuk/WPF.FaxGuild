@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WPF.FaxGuild.BLL.DTOs;
 using WPF.FaxGuild.Context;
-using WPF.FaxGuild.DAL.Models;
+using WPF.FaxGuild.Models;
 
 namespace WPF.FaxGuild.Services.OrderProviders
 {
@@ -18,7 +18,7 @@ namespace WPF.FaxGuild.Services.OrderProviders
         {
             _dbFactory = dbFactory;
         }
-        public async Task<IEnumerable<DAL.Models.Order>> GetAllOrders()
+        public async Task<IEnumerable<Models.Order>> GetAllOrders()
         {
             using(FaxguildDbContext context = _dbFactory.CreateDbContext())
             {
@@ -28,9 +28,9 @@ namespace WPF.FaxGuild.Services.OrderProviders
             }
         }
 
-        private static DAL.Models.Order ToOrder(OrderDTO o)
+        private static Models.Order ToOrder(OrderDTO o)
         {
-            return new DAL.Models.Order(new WorkplaceId(o.Roomnumber, o.Placenumber), o.Name, o.Start, o.End);
+            return new Models.Order(new WorkplaceId(o.Roomnumber, o.Placenumber), o.Name, o.Start, o.End);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 using WPF.FaxGuild.Commands;
-using WPF.FaxGuild.DAL.Models;
+using WPF.FaxGuild.Models;
 using WPF.FaxGuild.Services;
 using WPF.FaxGuild.Stores;
 
@@ -12,9 +12,10 @@ namespace WPF.FaxGuild.ViewModels
         public ICommand SubmitCommand { get; }
         public ICommand CancelCommand { get; }
 
-        public MakeOrderViewModel(Company company, NavigationService orderViewNavigationService)
+        public MakeOrderViewModel(CompanyStore companyStore,
+            NavigationService orderViewNavigationService)
         {
-            SubmitCommand = new MakeOrderCommand(this, company, orderViewNavigationService);
+            SubmitCommand = new MakeOrderCommand(this, companyStore, orderViewNavigationService);
             CancelCommand = new NavigateCommand(orderViewNavigationService);
         }
 

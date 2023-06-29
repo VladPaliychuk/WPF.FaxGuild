@@ -8,6 +8,6 @@ namespace WPF.FaxGuild.Services.OrderProviders
 {
     public interface IOrderProvider
     {
-        Task<IEnumerable<DAL.Models.Order>> GetAllOrders();
+        Task<IEnumerable<Models.Order>> GetAllOrders();
     }
 }

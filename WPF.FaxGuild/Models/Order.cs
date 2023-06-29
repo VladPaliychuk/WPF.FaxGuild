@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF.FaxGuild.DAL.Models
+namespace WPF.FaxGuild.Models
 {
     public class Order
     {
@@ -23,12 +23,5 @@ namespace WPF.FaxGuild.DAL.Models
 
         public TimeSpan Length => End.Subtract(Start);
 
-
-        public bool Conflicts(Order order)
-        {
-            if (order.WorkplaceId != WorkplaceId) { return false; }
-
-            return order.Start < order.End && order.End > order.Start;
-        }
     }
 }

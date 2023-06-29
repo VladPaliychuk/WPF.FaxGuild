@@ -2,8 +2,11 @@
 using System;
 using System.Windows;
 using WPF.FaxGuild.Context;
-using WPF.FaxGuild.DAL.Models;
+using WPF.FaxGuild.Models;
 using WPF.FaxGuild.Services;
+using WPF.FaxGuild.Services.OrderConflictValidators;
+using WPF.FaxGuild.Services.OrderCreators;
+using WPF.FaxGuild.Services.OrderProviders;
 using WPF.FaxGuild.Stores;
 using WPF.FaxGuild.ViewModels;
 
@@ -16,16 +19,26 @@ namespace WPF.FaxGuild
     {
         private const string connectionString = "DataSource=WpfFaxGuild.db";
         private readonly Company _company;
+        private readonly CompanyStore _companyStore;
         private readonly NavigationStore _navigationStore;
+        private readonly FaxguildDbContextFactory _faxguildDbContextFactory;
+
         public App()
         {
-            _company = new Company("CHNU");
+            _faxguildDbContextFactory = new FaxguildDbContextFactory(connectionString);
+            IOrderProvider orderProvider = new DatabaseOrderProvider(_faxguildDbContextFactory);
+            IOrderCreator orderCreator = new DatabaseOrderCreator(_faxguildDbContextFactory);
+            IOrderConflictValidator orderConflictValidator = new DatabaseOrderConflctValidator(_faxguildDbContextFactory);
+
+            OrderList orderList = new OrderList(orderProvider, orderCreator, orderConflictValidator);
+
+            _company = new Company("CHNU", orderList);
+            _companyStore = new CompanyStore(_company);
             _navigationStore = new NavigationStore();
         }
         protected override void OnStartup(StartupEventArgs e)
         {
-            DbContextOptions options = new DbContextOptionsBuilder().UseSqlite(connectionString).Options;
-            using (FaxguildDbContext dbContext = new FaxguildDbContext(options))
+            using (FaxguildDbContext dbContext = _faxguildDbContextFactory.CreateDbContext())
             {
                 dbContext.Database.Migrate();
             } ;
@@ -44,12 +57,12 @@ namespace WPF.FaxGuild
 
         private MakeOrderViewModel CreateMakeOrderViewModel()
         {
-            return new MakeOrderViewModel(_company, new NavigationService(_navigationStore, CreateOrderViewModel));
+            return new MakeOrderViewModel(_companyStore, new NavigationService(_navigationStore, CreateOrderViewModel));
         }
 
         private OrderListViewModel CreateOrderViewModel()
         {
-            return new OrderListViewModel(_company, new NavigationService(_navigationStore, CreateMakeOrderViewModel));
+            return OrderListViewModel.LoadViewModel(_companyStore, CreateMakeOrderViewModel(), new NavigationService(_navigationStore, CreateMakeOrderViewModel));
         }
     }
 }

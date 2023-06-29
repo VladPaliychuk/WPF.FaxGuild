@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WPF.FaxGuild.BLL.DTOs;
-using WPF.FaxGuild.DAL.Models;
 
 namespace WPF.FaxGuild.Context
 {

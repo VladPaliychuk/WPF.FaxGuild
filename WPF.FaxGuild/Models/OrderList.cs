@@ -4,25 +4,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WPF.FaxGuild.Exceptions;
+using WPF.FaxGuild.Services.OrderConflictValidators;
 using WPF.FaxGuild.Services.OrderCreators;
 using WPF.FaxGuild.Services.OrderProviders;
 
-namespace WPF.FaxGuild.DAL.Models
+namespace WPF.FaxGuild.Models
 {
     public class OrderList
     {
         private readonly IOrderProvider _orderProvider;
         private readonly IOrderCreator _orderCreator;
-        
+        private readonly IOrderConflictValidator _orderConflictValidator;
 
-        /// <summary>
-        /// Get a order by name.
-        /// </summary>
-        /// <param name="name">The name of employee</param>
-        /// <returns>The order of employee</returns>
-        public IEnumerable<Order> GetOrdersForName(string name)
+        public OrderList(IOrderProvider orderProvider, IOrderCreator orderCreator, IOrderConflictValidator orderConflictValidator)
         {
-            return _orders.Where(o => o.Name == name);
+            _orderConflictValidator = orderConflictValidator;
+            _orderProvider = orderProvider; 
+            _orderCreator = orderCreator;
         }
 
         public async Task<IEnumerable<Order>> GetAllOrders()
@@ -35,16 +33,16 @@ namespace WPF.FaxGuild.DAL.Models
         /// </summary>
         /// <param name="order">The order</param>
         /// <exception cref="OrderConflictException"></exception>
-        public void AddOrder(Order order)
+        public async Task AddOrder(Order order)
         {
-            foreach (var existingOrder in _orders)
+            Order conflictingOrder = await _orderConflictValidator.GetConflictOrder(order);
+
+            if(conflictingOrder != null)
             {
-                if (existingOrder.Conflicts(order))
-                {
-                    throw new OrderConflictException(existingOrder, order);
-                }
+                throw new OrderConflictException(conflictingOrder, order);
             }
-            _orders.Add(order);
+
+            await _orderCreator.CreateOrder(order);
         }
     }
 }

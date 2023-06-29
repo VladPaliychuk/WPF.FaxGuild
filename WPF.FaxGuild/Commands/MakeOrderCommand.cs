@@ -5,24 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using WPF.FaxGuild.DAL.Models;
 using WPF.FaxGuild.Exceptions;
+using WPF.FaxGuild.Models;
 using WPF.FaxGuild.Services;
+using WPF.FaxGuild.Stores;
 using WPF.FaxGuild.ViewModels;
 
 namespace WPF.FaxGuild.Commands
 {
-    public class MakeOrderCommand : CommandBase 
+    public class MakeOrderCommand : AsyncCommandBase 
     {
         private readonly MakeOrderViewModel _makeOrderViewModel;
-        private readonly Company _company;
+        private readonly CompanyStore _companyStore;
         private readonly NavigationService orderViewNavigationService;
 
-        public MakeOrderCommand(MakeOrderViewModel makeOrderViewModel, Company company,
+        public MakeOrderCommand(MakeOrderViewModel makeOrderViewModel, CompanyStore companyStore,
             NavigationService orderViewNavigationService)
         {
             _makeOrderViewModel = makeOrderViewModel;
-            _company = company;
+            _companyStore = companyStore;
             this.orderViewNavigationService = orderViewNavigationService;
             _makeOrderViewModel.PropertyChanged += OnViewModelPropertyChanged;
         }
@@ -42,18 +43,19 @@ namespace WPF.FaxGuild.Commands
                 && _makeOrderViewModel.Roomnumber > 0 
                 && base.CanExecute(parameter);
         }
-        public override void Execute(object parameter)
+        public override async Task ExecuteAsync(object parameter)
         {
-            var order = new DAL.Models.Order(
+            var order = new Models.Order(
                 new WorkplaceId(_makeOrderViewModel.Roomnumber, _makeOrderViewModel.Placenumber),
                 _makeOrderViewModel.Name,
                 _makeOrderViewModel.Start=DateTime.Now,
-                _makeOrderViewModel.End=DateTime.MinValue
+                _makeOrderViewModel.End
                 );
 
             try
             {
-                _company.MakeOrder(order);
+                await _companyStore.MakeOrder( order );
+                
                 MessageBox.Show("Відмічення успішне", "Успіх",
                    MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -62,6 +64,11 @@ namespace WPF.FaxGuild.Commands
             catch (OrderConflictException)
             {
                 MessageBox.Show("Робоче місце зайнято", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Помилка відмічення", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF.FaxGuild.DAL.Models
+namespace WPF.FaxGuild.Models
 {
     public class WorkplaceId
     {

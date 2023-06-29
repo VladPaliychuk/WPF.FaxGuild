@@ -4,28 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF.FaxGuild.DAL.Models
+namespace WPF.FaxGuild.Models
 {
     public class Company
     {
         private readonly OrderList _orderList;
         public string Name { get; }
 
-        public Company(string name)
+        public Company(string name, OrderList orderList)
         {
             Name = name;
 
-            _orderList = new OrderList();
+            _orderList = orderList;
         }
-
-        public IEnumerable<Order> GetOrdersForName(string name)
+        public async Task<IEnumerable<Models.Order>> GetAllOrders()
         {
-            return _orderList.GetOrdersForName(name);
+            return await _orderList.GetAllOrders();
         }
-        public void MakeOrder(Order order)
+        public async Task MakeOrder(Order order)
         {
-            _orderList.AddOrder(order);
+            await _orderList.AddOrder(order);
         }
-        public IEnumerable<Order> GetAllOrders() { return _orderList.GetAllOrders(); }
     }
 }
